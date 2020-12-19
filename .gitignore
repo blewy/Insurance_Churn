@@ -79,7 +79,9 @@ target/
 /data/
 
 # exclude models
-/models/
+/models
+
+*.csv
 
 # Mac OS-specific storage files
 .DS_Store
