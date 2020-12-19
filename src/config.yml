@@ -5,10 +5,6 @@ package_name: insur_churn
 training_data_file: Train.csv
 test_data_file: Test.csv
 
-# this variable is to calculate the temporal variable
-# but is dropped prior to model training.
-select_features: None
-
 pipeline_name: xgb_classification
 pipeline_save_file: xgb_classification_output_v
 
@@ -17,52 +13,33 @@ pipeline_save_file: xgb_classification_output_v
 target: label
 
 features:
-  - LotArea
-  - OverallQual
-  - YearRemodAdd
-  - BsmtQual
-  - BsmtFinSF1
-  - TotalBsmtSF
-  - FirstFlrSF
-  - SecondFlrSF
-  - GrLivArea
-  - GarageCars
-    # this one is only to calculate temporal variable:
-  - YrSold
+  - feature_0
+  - feature_1
+  - feature_2
+  - feature_3
+  - feature_4
+  - feature_5
+  - feature_7
+  - feature_14
+  - feature_15
+
 
 numerical_vars:
-  - LotArea
-  - OverallQual
-  - YearRemodAdd
-  - BsmtQual
-  - BsmtFinSF1
-  - TotalBsmtSF
-  - FirstFlrSF
-  - SecondFlrSF
-  - GrLivArea
-  - GarageCars
+  - None
+
 
 categorical_vars:
-  - BsmtQual
+  - None
 
-temporal_vars: YearRemodAdd
+temporal_vars: None
 
 # Validation
 # numerical variables with NA in train set
 numerical_vars_with_na:
-  - LotFrontage
+  - None
 
 numerical_na_not_allowed:
-  - LotArea
-  - OverallQual
-  - YearRemodAdd
-  - BsmtFinSF1
-  - TotalBsmtSF
-  - FirstFlrSF
-  - SecondFlrSF
-  - GrLivArea
-  - GarageCars
-  - YrSold
+  - None
 
 # set train/test split
 test_size: 0.1
