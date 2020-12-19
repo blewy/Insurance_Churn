@@ -1,20 +1,35 @@
-
-
-# save json data
 import json
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# AUC PR Curve
+from sklearn.metrics import (
+    average_precision_score,
+    precision_recall_curve,
+    roc_auc_score,
+    roc_curve,
+)
+
+# plot pdp plots
+from sklearn.inspection import partial_dependence
+
+# calibration plots
+from sklearn.calibration import calibration_curve
+
+
 # A method for saving object data to JSON file
 def save_json(self, filepath):
-    '''
-    Returns the sum of two decimal numbers in binary digits.
+    """
+    Serialize dictionaries into json formats
 
             Parameters:
-                    a (int): A decimal integer
-                    b (int): Another decimal integer
+                    self (dictionary): object to serialize as json
+                    filepath (path): path to folder where to save the object
 
             Returns:
-                    binary_sum (str): Binary string of the sum of a and b
-    '''
-    dict_ = {}
+                    no return
+    """
     dict_ = self
 
     # Creat json and save to file
@@ -22,18 +37,18 @@ def save_json(self, filepath):
     with open(filepath, 'w') as file:
         file.write(json_txt)
 
+
 # A method for loading data from JSON file
 def load_json(filepath):
-    '''
-    Returns the sum of two decimal numbers in binary digits.
+    """
+    Load dictionaries from json formats
 
             Parameters:
-                    a (int): A decimal integer
-                    b (int): Another decimal integer
+                    filepath (path): path to folder from where to load the object
 
             Returns:
-                    binary_sum (str): Binary string of the sum of a and b
-    '''
+                    no return
+    """
     with open(filepath, 'r') as file:
         dict_ = json.load(file)
 
@@ -42,16 +57,16 @@ def load_json(filepath):
 
 # function to desing a schema for data
 def create_schema(data, verbose=False):
-    '''
-    Returns the sum of two decimal numbers in binary digits.
+    """
+    Creates a data schema from a data frame
 
             Parameters:
-                    a (int): A decimal integer
-                    b (int): Another decimal integer
+                    data (dataframe): the dataframe with the data we want to create a schema
+                    verbose (bool): bool that indicated if we want to print stats from the dataframe
 
             Returns:
-                    binary_sum (str): Binary string of the sum of a and b
-    '''
+                    dictionary with the data schema
+    """
     schema = {}
     for feature in data.columns:
         if verbose:
@@ -69,22 +84,13 @@ def create_schema(data, verbose=False):
                     "values": (data[feature].unique()[0:20]).tolist(),
                     "pct_miss": float(np.round(data[feature].isnull().mean(), 3)),
                     "type": str(data[feature].dtypes)
-                   }
-        schema[feature]=thisdict
+                    }
+        schema[feature] = thisdict
     return schema
 
 
-    # AUC PR Curves
-
-from sklearn.metrics import (
-average_precision_score,
-precision_recall_curve,
-precision_recall_fscore_support,
-roc_auc_score,
-roc_curve,
-)
 def get_curve(gt, pred, target_names, curve='roc'):
-    '''
+    """
     Returns the sum of two decimal numbers in binary digits.
 
             Parameters:
@@ -93,7 +99,7 @@ def get_curve(gt, pred, target_names, curve='roc'):
 
             Returns:
                     binary_sum (str): Binary string of the sum of a and b
-    '''
+    """
     for i in range(len(target_names)):
         if curve == 'roc':
             curve_function = roc_curve
@@ -112,7 +118,7 @@ def get_curve(gt, pred, target_names, curve='roc'):
                        fancybox=True, ncol=1)
         elif curve == 'prc':
             precision, recall, _ = precision_recall_curve(gt, pred)
-            #avg_precision, avg_recall, avg_f1, _ = precision_recall_fscore_support(gt, pred, average='weighted')
+            # avg_precision, avg_recall, avg_f1, _ = precision_recall_fscore_support(gt, pred, average='weighted')
             average_precision = average_precision_score(gt, pred)
             label = target_names[i] + " Avg. Precision: %.3f " % average_precision
             plt.figure(1, figsize=(7, 7))
@@ -125,22 +131,20 @@ def get_curve(gt, pred, target_names, curve='roc'):
                        fancybox=True, ncol=1)
 
 
-#plot pdp plots
-from sklearn.inspection import partial_dependence
-
-def plot_pdp(model, X, feature, target=False, return_pd=False, y_pct=True, figsize=(10,9), norm_hist=True, dec=.5):
-    '''
-    Returns the sum of two decimal numbers in binary digits.
+def plot_pdp(model, x, feature, target=False, return_pd=False, y_pct=True, figsize=(10, 9), norm_hist=True, dec=.5):
+    """
+    Plot partial dependence plot suing sklearn and add a bar blot with the distribuition of the observations
 
             Parameters:
-                    a (int): A decimal integer
-                    b (int): Another decimal integer
+                    model (model): A decimal integer
+                    X (dataframe): Another decimal integer
+                    feature (str): Another decimal integer
 
             Returns:
-                    binary_sum (str): Binary string of the sum of a and b
-    '''
+                    plot
+    """
     # Get partial dependence
-    pardep = partial_dependence(model, X, [feature])
+    pardep = partial_dependence(model, x, [feature])
 
     # Get min & max values
     xmin = pardep[1][0].min()
@@ -164,11 +168,11 @@ def plot_pdp(model, X, feature, target=False, return_pd=False, y_pct=True, figsi
     tar_title = target if target else 'Target Variable'
     ax1.set_title('Relationship Between {} and {}'.format(feature, tar_title), fontsize=16)
 
-    if y_pct and ymin>=0 and ymax<=1:
+    if y_pct and ymin >= 0 and ymax <= 1:
         # Display yticks on ax1 as percentages
         fig.canvas.draw()
         labels = [item.get_text() for item in ax1.get_yticklabels()]
-        labels = [int(np.float(label.replace('−', '-'))*100) for label in labels]
+        labels = [int(np.float(label.replace('−', '-')) * 100) for label in labels]
         labels = ['{}%'.format(label) for label in labels]
         ax1.set_yticklabels(labels)
 
@@ -178,7 +182,7 @@ def plot_pdp(model, X, feature, target=False, return_pd=False, y_pct=True, figsi
 
     ax2 = ax1.twinx()
     color = 'tab:red'
-    ax2.hist(X[feature], bins=80, range=(xmin, xmax), alpha=.25, color=color, density=norm_hist)
+    ax2.hist(x[feature], bins=80, range=(xmin, xmax), alpha=.25, color=color, density=norm_hist)
     ax2.tick_params(axis='y', labelcolor=color)
     ax2.set_ylabel('Distribution', color=color, fontsize=14)
 
@@ -186,7 +190,7 @@ def plot_pdp(model, X, feature, target=False, return_pd=False, y_pct=True, figsi
         # Display yticks on ax2 as percentages
         fig.canvas.draw()
         labels = [item.get_text() for item in ax2.get_yticklabels()]
-        labels = [int(np.float(label.replace('−', '-'))*100) for label in labels]
+        labels = [int(np.float(label.replace('−', '-')) * 100) for label in labels]
         labels = ['{}%'.format(label) for label in labels]
         ax2.set_yticklabels(labels)
 
@@ -196,19 +200,18 @@ def plot_pdp(model, X, feature, target=False, return_pd=False, y_pct=True, figsi
         return pardep
 
 
-#calibration plots
-from sklearn.calibration import calibration_curve
-def plot_calibration_curve(y, pred,class_labels):
-    '''
-    Returns the sum of two decimal numbers in binary digits.
+def plot_calibration_curve(y, pred, class_labels):
+    """
+    Plot calibration plots for classifiction models
 
             Parameters:
-                    a (int): A decimal integer
-                    b (int): Another decimal integer
-
+                    y (series): Aobserved values
+                    pred (series): oredicted probabilities
+                    class_labels:
             Returns:
-                    binary_sum (str): Binary string of the sum of a and b
-    '''
+                    plot
+
+    """
     plt.figure(figsize=(20, 20))
     for i in range(len(class_labels)):
         plt.subplot(4, 4, i + 1)
@@ -223,17 +226,17 @@ def plot_calibration_curve(y, pred,class_labels):
 
 
 # AUC interval estimate
-def bootstrap_auc(y, pred, classes, bootstraps = 100, fold_size = 1000):
-    '''
+def bootstrap_auc(y, pred, classes, bootstraps=100, fold_size=1000):
+    """
     Returns the sum of two decimal numbers in binary digits.
 
             Parameters:
-                    a (int): A decimal integer
-                    b (int): Another decimal integer
+                    y (int): A decimal integer
+                    pred (int): Another decimal integer
 
             Returns:
                     binary_sum (str): Binary string of the sum of a and b
-    '''
+    """
     statistics = np.zeros((len(classes), bootstraps))
 
     for c in range(len(classes)):
@@ -246,8 +249,8 @@ def bootstrap_auc(y, pred, classes, bootstraps = 100, fold_size = 1000):
         prevalence = len(df_pos) / len(df)
         for i in range(bootstraps):
             # stratified sampling of positive and negative examples
-            pos_sample = df_pos.sample(n = int(fold_size * prevalence), replace=True)
-            neg_sample = df_neg.sample(n = int(fold_size * (1-prevalence)), replace=True)
+            pos_sample = df_pos.sample(n=int(fold_size * prevalence), replace=True)
+            neg_sample = df_neg.sample(n=int(fold_size * (1 - prevalence)), replace=True)
 
             y_sample = np.concatenate([pos_sample.y.values, neg_sample.y.values])
             pred_sample = np.concatenate([pos_sample.pred.values, neg_sample.pred.values])
@@ -255,18 +258,19 @@ def bootstrap_auc(y, pred, classes, bootstraps = 100, fold_size = 1000):
             statistics[c][i] = score
     return statistics
 
-#AUC confidence intervals
+
+# AUC confidence intervals
 def print_confidence_intervals(class_labels, statistics):
-    '''
+    """
     Returns the sum of two decimal numbers in binary digits.
 
             Parameters:
-                    a (int): A decimal integer
-                    b (int): Another decimal integer
+                    class_labels (int): A decimal integer
+                    statistics (int): Another decimal integer
 
             Returns:
                     binary_sum (str): Binary string of the sum of a and b
-    '''
+    """
     df = pd.DataFrame(columns=["Mean AUC (CI 5%-95%)"])
     for i in range(len(class_labels)):
         mean = statistics.mean(axis=1)[i]
