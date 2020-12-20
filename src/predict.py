@@ -30,9 +30,3 @@ def make_prediction(*, input_data: t.Union[pd.DataFrame, dict], ) -> dict:
 
     return results
 
-
-if __name__ == "__main__":
-    inputs = {'feature_0': [0, 3], 'feature_1': [0.5, 1], 'feature_2': [0, 1], 'feature_3': [0, 1], 'feature_4': [0, 1],
-              'feature_5': [0, 1], 'feature_7': [0, 1], 'feature_14': [0, 1], 'feature_15': [0, 1]}
-    df = pd.DataFrame(data=inputs)
-    print(make_prediction(input_data=df))
