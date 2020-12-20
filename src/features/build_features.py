@@ -16,7 +16,7 @@ churn_pipe = Pipeline(
          pp.SchemaBuild(config.model_config.features)
          ),
         ('model_xgb',
-         XGBClassifier(**parameters, eval_metric=config.model_config.eval_metric,use_label_encoder=False)
+         XGBClassifier(**parameters, eval_metric=config.model_config.eval_metric, use_label_encoder=False)
          )
     ]
 )

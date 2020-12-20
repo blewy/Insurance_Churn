@@ -1071,12 +1071,12 @@ class FeatureSelector( BaseEstimator, TransformerMixin ):
         self._feature_names = feature_names 
     
     #Return self nothing else to do here    
-    def fit( self, X, y = None ):
+    def fit( self, x, y = None ):
         return self 
     
     #Method that describes what we need this transformer to do
-    def transform( self, X, y = None ):
-        return X[ self._feature_names ] 
+    def transform( self, x, y = None ):
+        return x[ self._feature_names ] 
 
 
 #Custom Transformer that store a schema of data inside teh pipeline
