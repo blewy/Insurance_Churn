@@ -10,7 +10,7 @@ pipeline_save_file: xgb_classification_output_v
 
 # Variables
 # The variable we are attempting to predict (sale price)
-target: label
+target: labels
 
 features:
   - feature_0
@@ -55,3 +55,6 @@ max_depth: 7
 min_child_weight: 4.0
 n_estimators: 350
 subsample: 0.94
+
+#Evaluation metrics for validation data
+eval_metric: auc

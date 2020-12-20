@@ -41,6 +41,7 @@ class ModelConfig(BaseModel):
     numerical_na_not_allowed: t.Sequence[str]
     test_size: float
     random_state: int
+    eval_metric: str
 
 
 class ParametersConfig(BaseModel):

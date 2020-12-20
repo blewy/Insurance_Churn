@@ -77,11 +77,11 @@ target/
 
 # exclude data from source control by default
 /data/
-
+*.csv
 # exclude models
 /models
+*.pkl
 
-*.csv
 
 # Mac OS-specific storage files
 .DS_Store
