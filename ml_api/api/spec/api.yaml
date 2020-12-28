@@ -1,0 +1,56 @@
+openapi: 3.0.0
+
+info:
+  title: Spec for Insurance Churn Prediction API
+  version: '1'
+
+servers:
+- url: http://{base}:5000/
+  description: API for performing Churn probability predictions.
+  variables:
+    base:
+      default: 0.0.0.0
+
+paths:
+  /:
+    get:
+      operationId: api.controller.health
+      responses:
+        '200':
+          description: API Health Status
+
+  /v1/predictions:
+    post:
+      operationId: api.controller.predict
+      requestBody:
+        description: Client details used to make churn prediction
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/ClientDetails'
+      responses:
+        '200':
+          description: Churn Predictions
+        '400':
+          description: Bad request, client data validation failed
+        '5XX':
+          description: Unexpected error
+
+components:
+  schemas:
+    ClientDetails:
+      type: object
+      description: "List of the clients to get predictions for."
+      example:
+        feature_0: -0.276514
+        feature_1: -0.4244288
+        feature_2: 1.34499
+        feature_3: -0.01228
+        feature_4: 0.076229
+        feature_5: 1.0766
+        feature_7: 3
+        feature_14: 10
+        feature_15: 2
