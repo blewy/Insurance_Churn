@@ -52,6 +52,12 @@ models_folder = Path("/Users/joaosantos/Documents/Projects/Insurance_Churn/Insur
 data_folder = Path("/Users/joaosantos/Documents/Projects/Insurance_Churn/Insurance_Churn/data/")
 
 
+import utils as util
+
+
+
+
+
 # Review this :https://www.kaggle.com/udita3996/eda-woe-iv-calc-model-training
 
 
