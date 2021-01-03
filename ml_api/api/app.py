@@ -1,6 +1,6 @@
 import connexion
 
-from ml_api.api.config import Config
+from api.config import Config
 
 
 def create_app(*, config_object: Config) -> connexion.App:

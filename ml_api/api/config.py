@@ -3,7 +3,7 @@ import os
 import pathlib
 import sys
 
-import ml_api.api as api
+import api as api
 
 
 # logging format
